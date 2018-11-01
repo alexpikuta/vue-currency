@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-app dark>
-      <v-toolbar flat dark slot="no-results" :value="true">
+      <v-toolbar flat dark>
         <v-toolbar-title>Currencies</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-text-field
@@ -53,13 +53,11 @@
       <v-data-table
         dark
         :headers="headers"
-        :loading="loading"
         :items="currencies"
         :search="search"
         :pagination.sync="pagination"
         class="elevation-10"
       >
-        <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
         <template slot="items" slot-scope="props">
           <td>{{ props.item.id }}</td>
           <td class="text-xs-right">{{ props.item.name }}</td>
@@ -140,10 +138,6 @@
       ]),
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-      },
-      loading () {
-        console.log('loading')
-        return this.$store.getters.loading
       }
     },
 
@@ -183,6 +177,12 @@
 
       save () {
         if (this.editedIndex > -1) {
+          this.$store.dispatch('updateCurrency', {
+            id: this.editedItem.id,
+            name: this.editedItem.name,
+            location: this.editedItem.location,
+            currency: this.editedItem.currency
+          })
           console.log('edited')
         } else {
           const currency = {

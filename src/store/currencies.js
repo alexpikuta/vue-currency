@@ -19,6 +19,15 @@ export default {
     },
     loadCurrencies (state, payload) {
       state.currencies = payload
+    },
+    updateCurrency (state, {id, name, location, currency}) {
+      const item = state.currencies.find(a => {
+        return a.id === id
+      })
+      item.id = id
+      item.name = name
+      item.location = location
+      item.currency = currency
     }
   },
   actions: {
@@ -48,6 +57,18 @@ export default {
         throw error
       }
       // commit('addCurrency', payload)
+    },
+    async updateCurrency ({commit}, {id, name, location, currency}) {
+      try {
+        await frb.database().ref().child(id).update({
+          id, name, location, currency
+        })
+        commit('updateCurrency', {
+          id, name, location, currency
+        })
+      } catch (error) {
+        throw error
+      }
     }
   },
   getters: {
