@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-app>
-      <v-toolbar flat dark>
+    <v-app dark>
+      <v-toolbar flat dark slot="no-results" :value="true">
         <v-toolbar-title>Currencies</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-text-field
@@ -10,10 +10,13 @@
           label="Search"
           single-line
           hide-details
+          class="pb-3"
         ></v-text-field>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
-          <v-btn slot="activator" color="primary" dark class="mb-2">New Item</v-btn>
+          <v-btn slot="activator" dark class="mb-2 primary--text" style="border: #1976d2 2px solid">
+            <v-icon size="19">add</v-icon>
+            New Item</v-btn>
           <v-card>
             <v-card-title>
               <span class="headline">{{ formTitle }}</span>
@@ -50,16 +53,18 @@
       <v-data-table
         dark
         :headers="headers"
+        :loading="loading"
         :items="currencies"
         :search="search"
         :pagination.sync="pagination"
         class="elevation-10"
       >
+        <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
         <template slot="items" slot-scope="props">
           <td>{{ props.item.id }}</td>
-          <td>{{ props.item.name }}</td>
-          <td >{{ props.item.location }}</td>
-          <td>{{ props.item.currency }}</td>
+          <td class="text-xs-right">{{ props.item.name }}</td>
+          <td class="text-xs-right">{{ props.item.location }}</td>
+          <td class="text-xs-right">{{ props.item.currency }}</td>
           <td class="justify-center layout px-0">
             <v-icon
               small
@@ -93,6 +98,8 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+  
   export default {
     data: () => ({
       dialog: false,
@@ -107,12 +114,11 @@
           sortable: false,
           value: 'id'
         },
-        { text: 'Name', value: 'name' },
-        { text: 'Location', value: 'location' },
-        { text: 'Currency', value: 'currency' },
-        { text: 'Actions', value: 'name', sortable: false }
+        { text: 'Name', value: 'name', align: 'right' },
+        { text: 'Location', value: 'location', align: 'right' },
+        { text: 'Currency', value: 'currency', align: 'right' },
+        { text: 'Actions', value: 'name', align: 'center', sortable: false }
       ],
-      currencies: [],
       editedIndex: -1,
       editedItem: {
         id: '',
@@ -129,8 +135,15 @@
     }),
 
     computed: {
+      ...mapGetters([
+        'currencies'
+      ]),
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      },
+      loading () {
+        console.log('loading')
+        return this.$store.getters.loading
       }
     },
 
@@ -140,33 +153,14 @@
       }
     },
 
-    created () {
-      this.initialize()
-    },
+    // created () {
+    //   this.initialize()
+    // },
 
     methods: {
-      initialize () {
-        this.currencies = [
-          {
-            id: '17d5653e-ab63-44cb-b1f6-403d9d7c48a0',
-            name: 'Twitterlist',
-            location: 'Namur',
-            currency: 62675
-          },
-          {
-            id: '9eee0e4e-d3a7-4a4c-aca8-00077164abf2',
-            name: 'Mydo',
-            location: 'Bojong',
-            currency: 18917
-          },
-          {
-            id: '6d3a7fd5-da98-4fc8-9818-c59ac9b15d36',
-            name: 'Gigazoom',
-            location: 'Marshintsy',
-            currency: 89681
-          }
-        ]
-      },
+      // initialize () {
+      //   this.currencies = this.$store.getters.currencies
+      // },
 
       editItem (item) {
         this.editedIndex = this.currencies.indexOf(item)
@@ -189,12 +183,26 @@
 
       save () {
         if (this.editedIndex > -1) {
-          Object.assign(this.currencies[this.editedIndex], this.editedItem)
+          console.log('edited')
         } else {
-          this.currencies.push(this.editedItem)
+          const currency = {
+            id: this.editedItem.id,
+            name: this.editedItem.name,
+            location: this.editedItem.location,
+            currency: this.editedItem.currency
+          }
+          this.$store.dispatch('addCurrency', currency)
         }
         this.close()
       }
+      // save () {
+      //   if (this.editedIndex > -1) {
+      //     Object.assign(this.currencies[this.editedIndex], this.editedItem)
+      //   } else {
+      //     this.currencies.push(this.editedItem)
+      //   }
+      //   this.close()
+      // }
     }
   }
 </script>
