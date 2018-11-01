@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-app dark>
-      <v-toolbar flat dark slot="no-results" :value="true">
+      <v-toolbar flat dark>
         <v-toolbar-title>Currencies</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-text-field
@@ -26,7 +26,7 @@
               <v-container grid-list-md>
                 <v-layout wrap>
                   <v-flex xs12 sm8 md12>
-                    <v-text-field v-model="editedItem.id" label="id"></v-text-field>
+                    <v-text-field v-model="editedItem.uniqueId" label="id"></v-text-field>
                   </v-flex>
                   <v-flex xs12 sm4 md4>
                     <v-text-field v-model="editedItem.name" label="Name"></v-text-field>
@@ -53,15 +53,13 @@
       <v-data-table
         dark
         :headers="headers"
-        :loading="loading"
         :items="currencies"
         :search="search"
         :pagination.sync="pagination"
         class="elevation-10"
       >
-        <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
         <template slot="items" slot-scope="props">
-          <td>{{ props.item.id }}</td>
+          <td>{{ props.item.uniqueId }}</td>
           <td class="text-xs-right">{{ props.item.name }}</td>
           <td class="text-xs-right">{{ props.item.location }}</td>
           <td class="text-xs-right">{{ props.item.currency }}</td>
@@ -105,7 +103,7 @@
       dialog: false,
       search: '',
       pagination: {
-        sortBy: 'id'
+        sortBy: 'uniqueId'
       },
       headers: [
         {
@@ -121,13 +119,13 @@
       ],
       editedIndex: -1,
       editedItem: {
-        id: '',
+        uniqueId: '',
         name: '',
         location: '',
         currency: ''
       },
       defaultItem: {
-        id: '',
+        uniqueId: '',
         name: '',
         location: '',
         currency: ''
@@ -140,10 +138,6 @@
       ]),
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-      },
-      loading () {
-        console.log('loading')
-        return this.$store.getters.loading
       }
     },
 
@@ -163,9 +157,12 @@
       // },
 
       editItem (item) {
+        console.log('item id:', item)
         this.editedIndex = this.currencies.indexOf(item)
+        console.log('editedIndex:  = ', this.editedIndex)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
+        // console.log('this.editedItem: ', this.editedItem)
       },
 
       deleteItem (item) {
@@ -183,10 +180,19 @@
 
       save () {
         if (this.editedIndex > -1) {
+          Object.assign(this.currencies[this.editedIndex], this.editedItem)
+          // console.log('this.currencies[this.editedIndex]: ', this.currencies[this.editedIndex])
+          this.$store.dispatch('updateCurrency', {
+            uniqueId: this.editedItem.uniqueId,
+            name: this.editedItem.name,
+            location: this.editedItem.location,
+            currency: this.editedItem.currency,
+            id: this.editedItem.id
+          })
           console.log('edited')
         } else {
           const currency = {
-            id: this.editedItem.id,
+            uniqueId: this.editedItem.uniqueId,
             name: this.editedItem.name,
             location: this.editedItem.location,
             currency: this.editedItem.currency

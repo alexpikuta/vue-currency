@@ -1,11 +1,12 @@
 import * as frb from 'firebase'
 
 class Item {
-  constructor (id, name, location, currency) {
-    this.id = id
+  constructor (uniqueId, name, location, currency, id = null) {
+    this.uniqueId = uniqueId
     this.name = name
     this.location = location
     this.currency = currency
+    this.id = id
   }
 }
 
@@ -19,12 +20,21 @@ export default {
     },
     loadCurrencies (state, payload) {
       state.currencies = payload
+    },
+    updateCurrency (state, {uniqueId, name, location, currency, id}) {
+      const item = state.currencies.find(a => {
+        return a.id === id
+      })
+      item.uniqueId = uniqueId
+      item.name = name
+      item.location = location
+      item.currency = currency
     }
   },
   actions: {
     async addCurrency ({commit}, payload) {
       try {
-        const newItem = new Item(payload.id, payload.name, payload.location, payload.currency)
+        const newItem = new Item(payload.uniqueId, payload.name, payload.location, payload.currency)
         frb.database().ref().push(newItem)
       } catch (error) {
         throw error
@@ -40,7 +50,7 @@ export default {
         Object.keys(currencies).forEach(key => {
           const currency = currencies[key]
           resultCurrencies.push(
-            new Item(currency.id, currency.name, currency.location, currency.currency, key)
+            new Item(currency.uniqueId, currency.name, currency.location, currency.currency, key)
           )
         })
         commit('loadCurrencies', resultCurrencies)
@@ -48,6 +58,18 @@ export default {
         throw error
       }
       // commit('addCurrency', payload)
+    },
+    async updateCurrency ({commit}, {uniqueId, name, location, currency, id}) {
+      try {
+        await frb.database().ref().child(id).update({
+          uniqueId, name, location, currency
+        })
+        commit('updateCurrency', {
+          uniqueId, name, location, currency, id
+        })
+      } catch (error) {
+        throw error
+      }
     }
   },
   getters: {
