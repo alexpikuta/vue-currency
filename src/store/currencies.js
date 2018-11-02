@@ -67,8 +67,6 @@ export default {
       }
     },
     async updateCurrency ({commit}, {name, location, currency, id}) {
-      // console.log('commit:', commit)
-      console.log('id:', id)
       try {
         await frb.database().ref().child(id).update({
           name, location, currency

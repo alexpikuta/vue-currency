@@ -12,7 +12,7 @@
           hide-details
         ></v-text-field>
         <v-spacer></v-spacer>
-        <add-new></add-new>
+        <add-modal></add-modal>
       </v-toolbar>
 
       <v-data-table
@@ -29,7 +29,7 @@
           <td class="text-xs-right">{{ props.item.location }}</td>
           <td class="text-xs-right">{{ props.item.currency }}</td>
           <td class="justify-center layout px-0">
-          <edit-item :item="[props.item, props.index]"></edit-item>
+          <edit-modal :item="props.item"></edit-modal>
             <!-- <v-icon
               small
               @click="deleteItem(props.item)"
@@ -55,13 +55,13 @@
 </template>
 
 <script>
-  import addNew from './components/AddItem'
-  import editItem from './components/EditItem'
+  import addModal from './components/modals/AddModal'
+  import editModal from './components/modals/EditModal'
   import { mapGetters } from 'vuex'
   export default {
     components: {
-      addNew,
-      editItem
+      addModal,
+      editModal
     },
     data: () => ({
       dialog: false,

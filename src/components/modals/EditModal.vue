@@ -5,16 +5,16 @@
     </v-icon>
     <v-card>
       <v-card-title>
-        <span class="headline">New Item</span>
+        <span class="headline">Edit Item</span>
       </v-card-title>
 
       <v-card-text>
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12 sm8 md12>
-              <v-text-field v-model="editedId" label="id"></v-text-field>
+              <v-text-field v-model="this.item.itemId" label="id" disabled></v-text-field>
             </v-flex>
-            <!-- <v-flex xs12 sm4 md4>
+            <v-flex xs12 sm4 md4>
               <v-text-field v-model="editedName" label="Name"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
@@ -22,7 +22,7 @@
             </v-flex>
             <v-flex xs12 sm6 md4>
               <v-text-field v-model="editedCurrency" label="Currency"></v-text-field>
-            </v-flex> -->
+            </v-flex>
           </v-layout>
         </v-container>
       </v-card-text>
@@ -42,31 +42,23 @@
     data () {
       return {
         dialog: false,
-        currency: this.item[0],
-        currencyIndex: this.item[1],
-        editedId: 'this.item.id'
-        // editedName: this.item.name,
-        // editedLocation: this.item.location,
-        // editedCurrency: this.item.currency
+        editedName: this.item.name,
+        editedLocation: this.item.location,
+        editedCurrency: this.item.currency
       }
     },
     methods: {
       close () {
-        // this.editedId = this.item.id
-        // this.editedName = this.item.name
-        // this.editedLocation = this.item.location
-        // this.editedCurrency = this.item.currency
         this.dialog = false
       },
       save () {
-        console.log(this.currency)
-        console.log(this.currencyIndex)
-        // this.$store.dispatch('updateCurrency', {
-        //   title: this.editedTitle,
-        //   description: this.editedDescription,
-        //   id: this.ad.id
-        // })
-        // this.modal = false
+        this.$store.dispatch('updateCurrency', {
+          name: this.editedName,
+          location: this.editedLocation,
+          currency: this.editedCurrency,
+          id: this.item.id
+        })
+        this.dialog = false
       }
     }
   }
