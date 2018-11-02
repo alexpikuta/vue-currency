@@ -30,12 +30,6 @@
           <td class="text-xs-right">{{ props.item.currency }}</td>
           <td class="justify-center layout px-0">
           <edit-modal :item="props.item"></edit-modal>
-            <!-- <v-icon
-              small
-              @click="deleteItem(props.item)"
-            >
-              delete
-            </v-icon> -->
           </td>
           </template>
           <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -88,27 +82,7 @@
       ])
     },
 
-    watch: {
-      dialog (val) {
-        val || this.close()
-      }
-    },
-
-    created () {
-      // const array1 = [{n: '1'}, {n: '2'}, {n: '3'}, {n: '4'}]
-      // const reducer = (accumulator, currentValue) => accumulator + currentValue
-
-      // 1 + 2 + 3 + 4
-      // console.log(array1.reduce(reducer))
-
-      console.log(this.currencies[0])
-    },
-
     methods: {
-      // initialize () {
-      //   this.currencies = this.$store.getters.currencies
-      // },
-
       editItem (item) {
         console.log(this.currencies)
         this.editedIndex = this.currencies.indexOf(item)
@@ -119,30 +93,7 @@
       deleteItem (item) {
         const index = this.currencies.indexOf(item)
         confirm('Are you sure you want to delete this item?') && this.currencies.splice(index, 1)
-      },
-
-      save () {
-        if (this.editedIndex > -1) {
-          console.log('edited')
-        } else {
-          const currency = {
-            id: this.editedItem.id,
-            name: this.editedItem.name,
-            location: this.editedItem.location,
-            currency: this.editedItem.currency
-          }
-          this.$store.dispatch('addCurrency', currency)
-        }
-        this.close()
       }
-      // save () {
-      //   if (this.editedIndex > -1) {
-      //     Object.assign(this.currencies[this.editedIndex], this.editedItem)
-      //   } else {
-      //     this.currencies.push(this.editedItem)
-      //   }
-      //   this.close()
-      // }
     }
   }
 </script>

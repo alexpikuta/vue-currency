@@ -10,20 +10,12 @@
 
       <v-card-text>
         <v-container grid-list-md>
-          <v-layout wrap>
-            <v-flex xs12 sm8 md12>
-              <v-text-field v-model="itemId" label="id"></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm4 md4>
-              <v-text-field v-model="name" label="Name"></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm6 md4>
-              <v-text-field v-model="location" label="Location"></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm6 md4>
-              <v-text-field v-model="currency" label="Currency"></v-text-field>
-            </v-flex>
-          </v-layout>
+            <v-form ref="form" validation>
+              <v-text-field v-model="itemId" label="id" :rules="[rules.required]"></v-text-field>
+              <v-text-field v-model="name" label="Name" :rules="[rules.required]"></v-text-field>
+              <v-text-field v-model="location" label="Location" :rules="[rules.required]"></v-text-field>
+              <v-text-field v-model="currency" label="Currency" :rules="[rules.number, rules.required]"></v-text-field>
+          </v-form>
         </v-container>
       </v-card-text>
 
@@ -40,6 +32,11 @@
   export default {
     data () {
       return {
+        valid: true,
+        rules: {
+          required: value => !!value || 'This field is required',
+          number: value => /^[0-9]*$/.test(value) || 'This field should contains number characters only'
+        },
         dialog: false,
         itemId: '',
         id: '',
@@ -53,14 +50,16 @@
         this.dialog = false
       },
       save () {
-        const newCurrency = {
-          id: this.itemId,
-          name: this.name,
-          location: this.location,
-          currency: this.currency
+        if (this.$refs.form.validate()) {
+          const newCurrency = {
+            id: this.itemId,
+            name: this.name,
+            location: this.location,
+            currency: this.currency
+          }
+          this.$store.dispatch('addCurrency', newCurrency)
+          this.close()
         }
-        this.$store.dispatch('addCurrency', newCurrency)
-        this.close()
       }
     }
   }
