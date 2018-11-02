@@ -68,12 +68,12 @@ export default {
     },
     async updateCurrency ({commit}, {name, location, currency, id}) {
       try {
-        await frb.database().ref().child(id).update({
-          name, location, currency
+        await frb.database().ref().child(id).remove({
+          // name, location, currency
         })
-        commit('updateCurrency', {
-          name, location, currency, id
-        })
+        // commit('updateCurrency', {
+        //   name, location, currency, id
+        // })
       } catch (error) {
         throw error
       }
@@ -82,6 +82,9 @@ export default {
   getters: {
     currencies (state) {
       return state.currencies
+    },
+    getTotalBalance (state) {
+      return state.currencies.reduce((sum, e) => { return sum + Number(e.currency) }, 0)
     }
   }
 }

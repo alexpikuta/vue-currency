@@ -44,10 +44,11 @@
           <template slot="footer">
             <td></td>
             <td></td>
-            <td></td>
-            <td colspan="100%">
+            <td class="text-xs-right">
               <strong>Total:</strong>
             </td>
+            <td class="text-xs-right">{{ getTotalBalance }}</td>
+            <td></td>
           </template>
       </v-data-table>
     </v-app>
@@ -58,6 +59,7 @@
   import addModal from './components/modals/AddModal'
   import editModal from './components/modals/EditModal'
   import { mapGetters } from 'vuex'
+
   export default {
     components: {
       addModal,
@@ -66,43 +68,24 @@
     data: () => ({
       dialog: false,
       search: '',
+      currenciesSum: 0,
       pagination: {
         sortBy: 'id'
       },
       headers: [
-        {
-          text: 'id',
-          align: 'left',
-          sortable: false,
-          value: 'id'
-        },
+        { text: 'id', align: 'left', sortable: false, value: 'id' },
         { text: 'Name', value: 'name', align: 'right' },
         { text: 'Location', value: 'location', align: 'right' },
         { text: 'Currency', value: 'currency', align: 'right' },
         { text: 'Actions', value: 'name', align: 'center', sortable: false }
-      ],
-      editedIndex: -1,
-      editedItem: {
-        id: '',
-        name: '',
-        location: '',
-        currency: ''
-      },
-      defaultItem: {
-        id: '',
-        name: '',
-        location: '',
-        currency: ''
-      }
+      ]
     }),
 
     computed: {
       ...mapGetters([
-        'currencies'
-      ]),
-      formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-      }
+        'currencies',
+        'getTotalBalance'
+      ])
     },
 
     watch: {
@@ -111,9 +94,15 @@
       }
     },
 
-    // created () {
-    //   this.initialize()
-    // },
+    created () {
+      // const array1 = [{n: '1'}, {n: '2'}, {n: '3'}, {n: '4'}]
+      // const reducer = (accumulator, currentValue) => accumulator + currentValue
+
+      // 1 + 2 + 3 + 4
+      // console.log(array1.reduce(reducer))
+
+      console.log(this.currencies[0])
+    },
 
     methods: {
       // initialize () {
@@ -121,6 +110,7 @@
       // },
 
       editItem (item) {
+        console.log(this.currencies)
         this.editedIndex = this.currencies.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
