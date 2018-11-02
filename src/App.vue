@@ -10,44 +10,9 @@
           label="Search"
           single-line
           hide-details
-          class="pb-3"
         ></v-text-field>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
-          <v-btn slot="activator" dark class="mb-2 primary--text" style="border: #1976d2 2px solid">
-            <v-icon size="19">add</v-icon>
-            New Item</v-btn>
-          <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
-
-            <v-card-text>
-              <v-container grid-list-md>
-                <v-layout wrap>
-                  <v-flex xs12 sm8 md12>
-                    <v-text-field v-model="editedItem.id" label="id"></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm4 md4>
-                    <v-text-field v-model="editedItem.name" label="Name"></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm6 md4>
-                    <v-text-field v-model="editedItem.location" label="Location"></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm6 md4>
-                    <v-text-field v-model="editedItem.currency" label="Currency"></v-text-field>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-              <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <add-new></add-new>
       </v-toolbar>
 
       <v-data-table
@@ -59,24 +24,18 @@
         class="elevation-10"
       >
         <template slot="items" slot-scope="props">
-          <td>{{ props.item.id }}</td>
+          <td>{{ props.item.itemId || props.item.id}}</td>
           <td class="text-xs-right">{{ props.item.name }}</td>
           <td class="text-xs-right">{{ props.item.location }}</td>
           <td class="text-xs-right">{{ props.item.currency }}</td>
           <td class="justify-center layout px-0">
-            <v-icon
-              small
-              class="mr-2"
-              @click="editItem(props.item)"
-            >
-              edit
-            </v-icon>
-            <v-icon
+          <edit-item :item="[props.item, props.index]"></edit-item>
+            <!-- <v-icon
               small
               @click="deleteItem(props.item)"
             >
               delete
-            </v-icon>
+            </v-icon> -->
           </td>
           </template>
           <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -96,9 +55,14 @@
 </template>
 
 <script>
+  import addNew from './components/AddItem'
+  import editItem from './components/EditItem'
   import { mapGetters } from 'vuex'
-  
   export default {
+    components: {
+      addNew,
+      editItem
+    },
     data: () => ({
       dialog: false,
       search: '',
@@ -167,22 +131,8 @@
         confirm('Are you sure you want to delete this item?') && this.currencies.splice(index, 1)
       },
 
-      close () {
-        this.dialog = false
-        setTimeout(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        }, 300)
-      },
-
       save () {
         if (this.editedIndex > -1) {
-          this.$store.dispatch('updateCurrency', {
-            id: this.editedItem.id,
-            name: this.editedItem.name,
-            location: this.editedItem.location,
-            currency: this.editedItem.currency
-          })
           console.log('edited')
         } else {
           const currency = {
