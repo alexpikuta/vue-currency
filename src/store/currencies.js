@@ -85,6 +85,11 @@ export default {
     },
     getTotalBalance (state) {
       return state.currencies.reduce((sum, e) => { return sum + Number(e.currency) }, 0)
+    },
+    currencyById (state) {
+      return itemId => {
+        return state.currencies.find(item => item.id === itemId)
+      }
     }
   }
 }
