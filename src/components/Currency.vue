@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-layout row>
-      <v-flex xs12 sm8 offset-sm2 md8 offset-md2>
+      <v-flex xs12 sm8 offset-sm2 md8 offset-md2 class="pt-5">
         <v-list >
           <v-list-tile>
             <v-list-tile-content>

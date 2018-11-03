@@ -86,7 +86,6 @@
 
     methods: {
       editItem (item) {
-        console.log(this.currencies)
         this.editedIndex = this.currencies.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
