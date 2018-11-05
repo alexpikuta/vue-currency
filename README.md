@@ -2,6 +2,8 @@
 
 > A Vue.js project
 
+# Link to project: https://vue-currency-1.firebaseapp.com/
+
 ## Build Setup
 
 ``` bash
