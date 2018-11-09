@@ -1,8 +1,14 @@
 # vue-currency
 
-> A Vue.js project
+> Simple CRUD writen on Vue.js + Vuetify, which use Firebase authorization, realtime-db and storage
 
-# Link to project: https://vue-currency-1.firebaseapp.com/
+> Link to project: https://vue-currency-1.firebaseapp.com/
+
+## Used engines:
+```
+node v8.11.4
+npm v6.4.1
+```
 
 ## Build Setup
 
